@@ -1,9 +1,18 @@
-# Course data stays out of git (download it from Canvas into data/raw/)
-data/
-output/
+# Data files are not version-controlled (download from Canvas into data/raw/)
+data/raw/*
+data/processed/*
+!data/**/.gitkeep
 
+# Generated outputs (recreate by running the scripts)
+outputs/**
+!outputs/**/
+!outputs/**/.gitkeep
+
+# R / RStudio
 .Rproj.user/
 .Rhistory
 .RData
 .Ruserdata
+
+# OS
 .DS_Store
