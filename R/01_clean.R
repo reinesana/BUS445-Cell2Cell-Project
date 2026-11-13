@@ -110,6 +110,40 @@ write_csv(issues, "output/data_issues.csv")
 
 
 # ============================================================================
+# C1b | File vs dataset description (feeds the memo's data section)
+# ============================================================================
+
+is_frac <- function(x) sum(!is.na(x) & x != round(x))
+pcm <- range(raw$PercChangeMinutes, na.rm = TRUE)
+
+discrepancies <- tribble(
+  ~topic, ~description_says, ~file_shows,
+  "Row count", "~71,000 customers (telecom_churn.csv)",
+    sprintf("%s rows (cell2celltrain.csv)", format(nrow(raw), big.mark = ",")),
+  "Column count", "~40 variables",
+    sprintf("%d columns (extra: ServiceArea, HandsetModels, IncomeGroup, ...)", ncol(raw)),
+  "CreditRating", "1-5 scale",
+    sprintf("%d levels: %s", n_distinct(raw$CreditRating),
+            paste(sort(unique(raw$CreditRating)), collapse = ", ")),
+  "PercChangeMinutes", "Percentage change, prior to current quarter",
+    sprintf("Range %s to %s: looks like a change in minutes, not a percent",
+            format(pcm[1], big.mark = ","), format(pcm[2], big.mark = ",")),
+  "Call counts", "Integers",
+    sprintf("DroppedCalls has %s non-integer values: these are monthly averages",
+            format(is_frac(raw$DroppedCalls), big.mark = ",")),
+  "DroppedBlockedCalls", "Sum of dropped and blocked calls",
+    sprintf("Differs from the sum in %s rows", format(sum(dbc_gap > 0.5, na.rm = TRUE), big.mark = ",")),
+  "HandsetPrice", "Retail price (USD)",
+    sprintf("%.0f%% 'Unknown'", 100 * mean(raw$HandsetPrice == "Unknown", na.rm = TRUE)),
+  "AgeHH1", "Age of primary adult",
+    sprintf("%s rows are 0 (unknown), %s missing", format(sum(raw$AgeHH1 == 0, na.rm = TRUE), big.mark = ","),
+            format(sum(is.na(raw$AgeHH1)), big.mark = ","))
+)
+print(discrepancies, n = Inf, width = Inf)
+write_csv(discrepancies, "output/file_discrepancies.csv")
+
+
+# ============================================================================
 # C2 | Cleaning steps (feeds log Section 3.3)
 # ============================================================================
 
@@ -180,7 +214,9 @@ cc <- cc %>%
     # Controls
     tenure_band = cut(MonthsInService, breaks = c(-Inf, 12, 24, 36, Inf),
                       labels = c("0-12m", "13-24m", "25-36m", "37m+")),
-    credit_rating = factor(CreditRating),
+    # Ordered categories "1-Highest" ... "7-Lowest" (not numeric). Plain factor so
+    # glm() gives one odds ratio per level vs 1-Highest.
+    credit_rating = factor(CreditRating, levels = sort(unique(CreditRating))),
     multiline_flag = as.integer(UniqueSubs > 1),
     # PercChangeMinutes looks like a change in minutes, not a percent: check dictionary
     usage_decline_flag = as.integer(PercChangeMinutes < 0),

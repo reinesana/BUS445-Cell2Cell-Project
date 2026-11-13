@@ -2,7 +2,7 @@
 BUS 445 Team Project: Cell2Cell retention analysis for Raj Patel (Director of Retention Operations).
 
 ## Setup
-1. Download the Canvas data file into `data/raw/` (git-ignored, never commit it).
+1. Download the Canvas data file (and the dataset description) into `data/raw/` (git-ignored, never commit it).
    The cleaning script expects `data/raw/cell2celltrain.csv`; change `RAW_FILE` at the top of the script if yours is named differently.
 2. Open `BUS445-Cell2Cell-Project.Rproj` in RStudio so the working directory is the repo root.
 3. Run `R/01_clean.R` once (needs `dplyr` and `readr`).
@@ -36,3 +36,4 @@ Per-minute rates are `NA` for customers with zero minutes; use `zero_usage_flag`
 - `cleaning_steps.csv`: rows dropped at each step and why
 - `lever_distributions.csv`: distributions and missing values (EDA check E2)
 - `churn_by_band.csv`: churn rate by band for each lever
+- `file_discrepancies.csv`: where the file differs from the dataset description (for the memo's data section)
