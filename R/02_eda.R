@@ -56,9 +56,9 @@ spread <- bind_rows(lapply(numbers, function(name) {
 }))
 
 # 3. Churn rate by band for each lever and control
-groups <- c("phone_band", "phone_web", "phone_refurb", "price_known",
+groups <- c("phone_band", "phone_web", "phone_refurb", "price_known", "first_phone",
             "overage_band", "below_plan", "drop_band", "block_band",
-            "care_call", "tenure_band", "multiline", "usage_drop", "zero_usage")
+            "care_call", "tenure_band", "credit", "multiline", "inactive_lines", "usage_drop", "zero_usage")
 by_band <- function(name) {
   clean %>%
     group_by(band = .data[[name]]) %>%
