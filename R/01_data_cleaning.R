@@ -2,8 +2,7 @@
 # Cell2Cell Customer Retention Analysis
 # 01_data_cleaning.R
 #
-# Owner   : [name]
-# Status  : Complete
+# Owner   : Shana Nursoo, Pranav
 # Purpose : Clean the raw Cell2Cell customer file, build the shared analysis
 #           variables and create a fixed train/test split.
 # Input   : data/cell2celltrain.csv
@@ -23,23 +22,11 @@ suppressPackageStartupMessages({
   library(readr)
 })
 
-
-# -----------------------------------------------------------------------------
-# 1. Configuration
-# -----------------------------------------------------------------------------
-
 RAW_FILE    <- "data/cell2celltrain.csv"
 SEED        <- 445
 TRAIN_SHARE <- 0.70
-
-# Real monthly churn rate, used to rescale the file's over-sampled churn share.
-# Leave as NA until a sourced figure is agreed.
 REAL_MONTHLY_CHURN <- NA_real_
 
-
-# -----------------------------------------------------------------------------
-# 2. Helpers
-# -----------------------------------------------------------------------------
 
 yes_no  <- function(x) as.integer(toupper(trimws(as.character(x))) %in% c("YES", "Y", "1", "TRUE"))
 per_min <- function(x, minutes) ifelse(minutes > 0, x / minutes, NA_real_)
@@ -55,11 +42,6 @@ log_step <- function(before, after, description) {
                        rows_before = nrow(before), rows_after = nrow(after))
   after
 }
-
-
-# -----------------------------------------------------------------------------
-# 3. Load and validate
-# -----------------------------------------------------------------------------
 
 if (!file.exists(RAW_FILE)) {
   stop("Raw data not found at ", RAW_FILE,
@@ -83,11 +65,6 @@ if (length(missing_cols) > 0) {
   stop("Required columns missing from the raw file: ",
        paste(missing_cols, collapse = ", "))
 }
-
-
-# -----------------------------------------------------------------------------
-# 4. Data quality report
-# -----------------------------------------------------------------------------
 
 numeric_cols <- c("CurrentEquipmentDays", "OverageMinutes", "MonthlyMinutes",
                   "MonthlyRevenue", "TotalRecurringCharge", "DroppedCalls",
@@ -168,10 +145,6 @@ cc <- log_step(cc, filter(cc, !is.na(CurrentEquipmentDays), CurrentEquipmentDays
                           !is.na(MonthsInService)),
                "Remove missing or negative handset age and tenure")
 
-
-# -----------------------------------------------------------------------------
-# 6. Analysis variables (definitions documented in README.md)
-# -----------------------------------------------------------------------------
 
 cc <- cc %>%
   mutate(
