@@ -1,0 +1,2 @@
+"lever","intervention","customers_affected","churn_pct_affected","churn_pct_other","avg_revenue_usd","odds_ratio","ci_low","ci_high","adjusted_gap_pp","association_exposure_index_usd_month","fix_cost_low_usd","fix_cost_high_usd","break_even_causal_share","cost_note"
+"old_phone","Pilot targeted upgrade incentive; compare with current retention practice",22084,33.2774859626879,25.3333797569723,49.9710487230574,1.52624712471773,1.43073222816922,1.62813854321986,8.42136186745817,92934.8349212373,,,,"Costs, actual base rate, margin, and causal share require validation"

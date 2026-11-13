@@ -1,0 +1,2 @@
+"lever","intervention","customers_affected","churn_pct_affected","churn_pct_other","avg_revenue_usd","odds_ratio","ci_low","ci_high","adjusted_gap_pp","association_exposure_index_usd_month","fix_cost_low_usd","fix_cost_high_usd","break_even_causal_share","cost_note"
+"high_drop","Investigate high-exposure accounts; area-level network repair needs feasibility study",8484,30.9052333804809,28.3618061955058,59.7644471947195,1.1853502146535,1.11354846117474,1.26178175478491,3.37252932422033,17100.1256342371,,,,"Costs, actual base rate, margin, and causal share require validation"

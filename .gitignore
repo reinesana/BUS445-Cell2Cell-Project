@@ -10,3 +10,6 @@ data/*
 
 # OS
 .DS_Store
+
+# Keep customer data local
+data/*.csv

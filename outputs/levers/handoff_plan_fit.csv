@@ -1,0 +1,2 @@
+"lever","intervention","customers_affected","churn_pct_affected","churn_pct_other","avg_revenue_usd","odds_ratio","ci_low","ci_high","adjusted_gap_pp","association_exposure_index_usd_month","fix_cost_low_usd","fix_cost_high_usd","break_even_causal_share","cost_note"
+"high_overage","Test bill-neutral right-sized plan offer; verify allowance and margin feasibility",7054,34.4343634817125,27.8759342643597,98.4543904167848,1.13433446116964,1.04516133159108,1.2311158391578,2.69138211226448,18691.5752949451,,,,"Costs, actual base rate, margin, and causal share require validation"

@@ -1,0 +1,3 @@
+"feature","interpretation","assumption"
+"OverageMinutes/MonthlyMinutes > 0.15","High overage exposure (>15% of minutes), subject to valid usage","Eligibility threshold selected for pilot exploration"
+"MonthlyRevenue - TotalRecurringCharge","Bill above or below fixed plan charge; NOT all overage fees","Changing plan allowance may change variable revenue and service cost"

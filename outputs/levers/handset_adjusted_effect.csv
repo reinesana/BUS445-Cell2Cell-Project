@@ -1,0 +1,2 @@
+"variable","train_n","heldout_n","exposed_heldout_n","adjusted_or","ci_low","ci_high","adjusted_gap_pp"
+"old_phone",35477,15121,6542,1.52624712471773,1.43073222816922,1.62813854321986,8.42136186745817

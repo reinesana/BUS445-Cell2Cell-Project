@@ -1,0 +1,2 @@
+"variable","train_n","heldout_n","exposed_heldout_n","adjusted_or","ci_low","ci_high","adjusted_gap_pp"
+"high_drop",35477,15121,2516,1.1853502146535,1.11354846117474,1.26178175478491,3.37252932422033
