@@ -4,11 +4,16 @@
 #
 # Purpose : Clean the raw Cell2Cell customer file, build the shared analysis
 #           variables and create a fixed train/test split.
-# Input   : data/raw/cell2celltrain.csv
-# Outputs : data/processed/cell2cell_clean.rds (and .csv)
-#           outputs/tables/*.csv  (data quality and exploratory summaries)
+# Input   : data/cell2celltrain.csv
+# Creates : clean               analysis dataset (one row per customer)
+#           data_issues         data quality problems in the raw file
+#           description_vs_file differences from the dataset description
+#           step_log            rows removed at each cleaning step
+#           variable_summary    distribution of key variables
+#           churn_by_band       churn rate by band for each lever and control
 #
-# Run from the project root (open BUS445-Cell2Cell-Project.Rproj in RStudio).
+# Usage   : source("scripts/01_data_cleaning.R") from the project root
+#           (open BUS445-Cell2Cell-Project.Rproj in RStudio).
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -21,19 +26,13 @@ suppressPackageStartupMessages({
 # 1. Configuration
 # -----------------------------------------------------------------------------
 
-RAW_FILE       <- "data/raw/cell2celltrain.csv"
-PROCESSED_DIR  <- "data/processed"
-TABLES_DIR     <- "outputs/tables"
-
-SEED           <- 445
-TRAIN_SHARE    <- 0.70
+RAW_FILE    <- "data/cell2celltrain.csv"
+SEED        <- 445
+TRAIN_SHARE <- 0.70
 
 # Real monthly churn rate, used to rescale the file's over-sampled churn share.
 # Leave as NA until a sourced figure is agreed.
 REAL_MONTHLY_CHURN <- NA_real_
-
-dir.create(PROCESSED_DIR, recursive = TRUE, showWarnings = FALSE)
-dir.create(TABLES_DIR,    recursive = TRUE, showWarnings = FALSE)
 
 
 # -----------------------------------------------------------------------------
@@ -62,7 +61,7 @@ log_step <- function(before, after, description) {
 
 if (!file.exists(RAW_FILE)) {
   stop("Raw data not found at ", RAW_FILE,
-       ". Download it from Canvas into data/raw/ (see README).")
+       ". Download it from Canvas into data/ (see README).")
 }
 
 raw <- read_csv(RAW_FILE, na = c("", "NA", "NaN"), show_col_types = FALSE)
@@ -169,7 +168,7 @@ cc <- log_step(cc, filter(cc, !is.na(CurrentEquipmentDays), CurrentEquipmentDays
 
 
 # -----------------------------------------------------------------------------
-# 6. Analysis variables (definitions documented in docs/data_dictionary.md)
+# 6. Analysis variables (definitions documented in README.md)
 # -----------------------------------------------------------------------------
 
 cc <- cc %>%
@@ -235,7 +234,7 @@ cc <- cc %>%
 
 
 # -----------------------------------------------------------------------------
-# 8. Save the analysis dataset
+# 8. Analysis dataset
 # -----------------------------------------------------------------------------
 
 analysis_vars <- c(
@@ -253,9 +252,6 @@ analysis_vars <- c(
   "retention_calls", "retention_offers_accepted", "made_retention_call"
 )
 clean <- select(cc, all_of(analysis_vars))
-
-saveRDS(clean,   file.path(PROCESSED_DIR, "cell2cell_clean.rds"))
-write_csv(clean, file.path(PROCESSED_DIR, "cell2cell_clean.csv"))
 
 
 # -----------------------------------------------------------------------------
@@ -283,12 +279,6 @@ churn_by_band <- bind_rows(lapply(band_vars, function(v) {
     mutate(variable = v, band = as.character(band), .before = 1)
 }))
 
-write_csv(data_issues,         file.path(TABLES_DIR, "data_quality_issues.csv"))
-write_csv(description_vs_file, file.path(TABLES_DIR, "description_vs_file.csv"))
-write_csv(step_log,            file.path(TABLES_DIR, "cleaning_steps.csv"))
-write_csv(variable_summary,    file.path(TABLES_DIR, "variable_summary.csv"))
-write_csv(churn_by_band,       file.path(TABLES_DIR, "churn_by_band.csv"))
-
 
 # -----------------------------------------------------------------------------
 # 10. Console summary
@@ -307,4 +297,3 @@ if (is.na(REAL_MONTHLY_CHURN)) {
   cat(sprintf("  Real churn rate : %.1f%% (file over-represents churners %.1fx)\n",
               100 * REAL_MONTHLY_CHURN, file_churn / REAL_MONTHLY_CHURN))
 }
-cat(sprintf("  Saved to        : %s/, %s/\n", PROCESSED_DIR, TABLES_DIR))
