@@ -1,0 +1,9 @@
+# Course data stays out of git (download it from Canvas into data/raw/)
+data/
+output/
+
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
