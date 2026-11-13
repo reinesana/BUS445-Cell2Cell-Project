@@ -9,9 +9,9 @@ suppressPackageStartupMessages({
   library(readr)
 })
 
-path  <- "data/cell2celltrain.csv"
-seed  <- 445
-share <- 0.70
+file_path   <- "data/cell2celltrain.csv"
+seed        <- 445
+train_ratio <- 0.70
 
 # Helpers: Yes/No to 1/0, safe division by minutes, ceiling at the 99th percentile, quartile bands
 yes     <- function(x) as.integer(x == "Yes")
@@ -20,8 +20,8 @@ cap     <- function(x) pmin(x, quantile(x, 0.99, na.rm = TRUE))
 quarter <- function(x) cut(x, c(-Inf, quantile(x, c(0.25, 0.5, 0.75), na.rm = TRUE), Inf), c("Q1 low", "Q2", "Q3", "Q4 high"))
 
 # Open the data; blank cells count as missing
-if (!file.exists(path)) stop("Put cell2celltrain.csv from Canvas in data/")
-raw <- read_csv(path, na = c("", "NA", "NaN"), show_col_types = FALSE)
+if (!file.exists(file_path)) stop("Put cell2celltrain.csv from Canvas in data/")
+raw <- read_csv(file_path, na = c("", "NA", "NaN"), show_col_types = FALSE)
 
 # Stop early if a needed column is absent
 needed <- c(
@@ -107,7 +107,7 @@ clean <- clean %>%
 set.seed(seed)
 clean <- clean %>%
   group_by(churn) %>%
-  mutate(split = ifelse(runif(n()) < share, "train", "test")) %>%
+  mutate(split = ifelse(runif(n()) < train_ratio, "train", "test")) %>%
   ungroup()
 
 # Summary

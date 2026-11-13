@@ -91,3 +91,23 @@ One row per customer. Flags are 1 for yes and 0 for no.
 - `PercChangeMinutes` ranges from -3,875 to 5,192, so only its sign is used.
 - The churn share in the file (28.6%) is far above a realistic monthly rate
   and should not be used directly as the base rate.
+
+## Next steps for data cleaning
+
+1. **Zero-usage customers (684).** Their rates are blank, so `glm()` drops them
+   silently. Decide: set their rates to 0 and rely on `zero_usage`, or leave
+   them out of the model and report them separately.
+2. **Service areas.** `area` has 748 values, 475 with under 30 customers, and
+   24 blanks. Group them into larger regions before the network analysis.
+3. **Inactive lines.** Add a flag for `UniqueSubs > ActiveSubs`. These 6,623
+   customers leave more often (34.4% vs 27.8%).
+4. **First phone.** Add a flag for `Handsets == 1`. Customers who never
+   changed phone leave more often (30.0% vs about 27%).
+5. **Real churn rate.** Source the real monthly rate and set `real_churn` in
+   `R/02_eda.R`.
+6. **Row count.** The description says about 71,000 customers; the file has
+   51,047. Confirm with the instructor that this is the full file.
+7. **Team log.** Copy the tables from `R/02_eda.R` into sections 3.1-3.4.
+
+Checked and not needed: `PercChangeRevenues` and `RoamingCalls` show no churn
+gap, and `phone_price` is too incomplete to use (use `price_known` instead).
