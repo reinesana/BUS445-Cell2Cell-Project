@@ -23,8 +23,8 @@ Each script starts with `source("R/01_data_cleaning.R")`. Add your name to the
 
 | Script | Purpose | Owner |
 |---|---|---|
-| `01_data_cleaning.R` | Clean data, shared variables, train/test split | |
-| `02_eda.R` | Churn share vs real rate, churn by band, gaps within tenure, segment sizes | |
+| `01_data_cleaning.R` | Clean data, shared variables, train/test split | Shana Nursoo, Pranav |
+| `02_eda.R` | Data checks, churn share vs real rate, churn by band, gaps within tenure, segment sizes | |
 | `03_lever_handset.R` | Handset lever: age, web-capable, refurbished | |
 | `04_lever_plan_fit.R` | Plan-fit lever: overage share, revenue gap | |
 | `05_lever_network.R` | Network lever: dropped and blocked calls per minute | |
@@ -50,49 +50,44 @@ train <- subset(clean, split == "train")
 test  <- subset(clean, split == "test")
 ```
 
-The split is 70/30, stratified by churn, with seed 445. The script also creates
-these summary tables: `data_issues`, `description_vs_file`, `step_log`,
-`variable_summary` and `churn_by_band`.
+The split is 70/30 with the same share of churners in each part (seed 445).
+Data checks and churn-by-band tables are in `R/02_eda.R`.
 
 ## Variables in `clean`
 
-One row per customer.
+One row per customer. Flags are 1 for yes and 0 for no.
 
-| Group | Variable | Definition |
+| Group | Variable | Meaning |
 |---|---|---|
-| ID / outcome | `CustomerID` | Unique customer identifier |
-| | `churn` | 1 if the customer churned |
+| Basics | `id` | Customer ID |
+| | `churn` | 1 if the customer left |
 | | `split` | `train` or `test` |
-| | `ServiceArea` | Service area (unit for area-level network pilots) |
-| Handset | `handset_age_months` | `CurrentEquipmentDays / 30.4` |
-| | `handset_age_band` | `0-6m`, `6-12m`, `12-18m`, `18-24m`, `24m+` |
-| | `handset_web`, `handset_refurb` | 1 if web-capable / refurbished |
-| | `handset_price`, `handset_price_known` | Price in USD (`NA` when "Unknown", ~57%) |
-| Plan fit | `overage_share` | `OverageMinutes / MonthlyMinutes`, capped at 1 |
+| | `area` | Service area |
+| Phone | `phone_age` | Age of the current phone in months |
+| | `phone_band` | `0-6m`, `6-12m`, `12-18m`, `18-24m`, `24m+` |
+| | `phone_web`, `phone_refurb` | Web-capable / refurbished |
+| | `phone_price`, `price_known` | Price in USD (blank when "Unknown", about 57%) |
+| Plan fit | `overage_share` | Overage minutes divided by monthly minutes |
 | | `overage_band` | `None`, `0-5%`, `5-15%`, `15%+` |
-| | `revenue_gap` | `MonthlyRevenue - TotalRecurringCharge` |
-| Network | `drops_per_min`, `drops_per_100min` | `DroppedCalls / MonthlyMinutes` |
-| | `blocked_per_min`, `blocked_per_100min` | `BlockedCalls / MonthlyMinutes` |
-| | `drops_band`, `blocked_band` | Quartiles of each rate |
-| Service | `care_call_flag` | 1 if `CustomerCareCalls > 0` (descriptive only: reverse-causation risk) |
-| Controls | `MonthsInService`, `tenure_band` | Tenure; bands `0-12m`, `13-24m`, `25-36m`, `37m+` |
-| | `credit_rating` | Factor, `1-Highest` to `7-Lowest` |
-| | `multiline_flag` | 1 if `UniqueSubs > 1` |
-| | `usage_decline_flag` | 1 if `PercChangeMinutes < 0` |
-| | `zero_usage_flag` | 1 if `MonthlyMinutes == 0` (per-minute rates are `NA`) |
-| Save-desk | `retention_calls`, `retention_offers_accepted`, `made_retention_call` | Robustness check only; excluded from the lever ranking |
-
-Raw fields kept for reference: `MonthlyRevenue`, `TotalRecurringCharge`,
-`MonthlyMinutes`, `OverageMinutes`, `DroppedCalls`, `BlockedCalls`,
-`CustomerCareCalls`, `PercChangeMinutes`. `DroppedBlockedCalls` is not used.
+| | `revenue_gap` | Monthly bill minus plan price |
+| | `below_plan` | Pays less than the plan price |
+| Network | `drop_rate`, `block_rate` | Dropped / blocked calls per 100 minutes, capped at the 99th percentile |
+| | `drop_band`, `block_band` | Quartiles of each rate |
+| Service | `care_call` | Called customer care (describe only: customers about to leave may call more) |
+| Background | `tenure`, `tenure_band` | Months in service; `0-12m`, `13-24m`, `25-36m`, `37m+` |
+| | `credit` | Credit rating, `1-Highest` to `7-Lowest` |
+| | `multiline` | More than one line |
+| | `usage_drop` | Minutes fell since last quarter |
+| | `zero_usage` | No minutes used (rates are blank) |
+| Retention | `retention_calls`, `offers_accepted`, `retention_flag` | Stability check in `06_model.R` only; never in the lever ranking |
+| Raw amounts | `revenue`, `plan_charge`, `minutes`, `overage`, `drops`, `blocks`, `care_calls`, `minutes_change` | Original monthly figures |
 
 ## Data notes
 
-- Cleaning removes duplicate IDs, missing churn, missing usage or revenue,
-  negative values, and missing or negative handset age or tenure
-  (51,047 → 50,598 customers).
+- Cleaning removes 449 customers (51,047 → 50,598): 367 with no usage or bill
+  recorded, 5 with a negative bill, 77 with a missing or negative phone age.
 - The file differs from the dataset description: 51,047 rows and 58 columns
-  (not ~71,000 and ~40), and `CreditRating` has 7 levels (not 1-5).
+  (not about 71,000 and 40), and `CreditRating` has 7 levels (not 1-5).
 - `PercChangeMinutes` ranges from -3,875 to 5,192, so only its sign is used.
-- The churn share in the file (~28.6%) is far above a realistic monthly rate
+- The churn share in the file (28.6%) is far above a realistic monthly rate
   and should not be used directly as the base rate.

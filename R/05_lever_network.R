@@ -12,7 +12,7 @@ source("R/01_data_cleaning.R")
 
 
 # -----------------------------------------------------------------------------
-# 1. Churn by drops_band and blocked_band
+# 1. Churn by drop_band and block_band
 # -----------------------------------------------------------------------------
 
 
@@ -30,7 +30,7 @@ source("R/01_data_cleaning.R")
 
 
 # -----------------------------------------------------------------------------
-# 4. Problem service areas (ServiceArea) and customers affected
+# 4. Problem service areas (area) and customers affected
 # -----------------------------------------------------------------------------
 
 

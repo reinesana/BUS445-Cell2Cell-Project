@@ -12,7 +12,7 @@ source("R/01_data_cleaning.R")
 
 
 # -----------------------------------------------------------------------------
-# 1. Churn by handset_age_band, handset_web, handset_refurb
+# 1. Churn by phone_band, phone_web, phone_refurb
 # -----------------------------------------------------------------------------
 
 

@@ -18,7 +18,7 @@ source("R/01_data_cleaning.R")
 
 
 # -----------------------------------------------------------------------------
-# 2. Dollars per lever: customers x churn reduction x MonthlyRevenue x margin x months retained + discounts avoided - fix cost
+# 2. Dollars per lever: customers x churn reduction x revenue x margin x months retained + discounts avoided - fix cost
 # -----------------------------------------------------------------------------
 
 

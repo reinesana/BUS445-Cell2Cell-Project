@@ -12,7 +12,7 @@ source("R/01_data_cleaning.R")
 
 
 # -----------------------------------------------------------------------------
-# 1. Churn by overage_band and revenue_gap
+# 1. Churn by overage_band, revenue_gap and below_plan
 # -----------------------------------------------------------------------------
 
 
