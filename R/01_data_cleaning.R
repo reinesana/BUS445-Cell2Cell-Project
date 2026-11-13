@@ -9,8 +9,8 @@ suppressPackageStartupMessages({
   library(readr)
 })
 
-file_path   <- "data/cell2celltrain.csv"
-seed        <- 445
+c2c_data <- "data/cell2celltrain.csv"
+seed <- 445
 train_ratio <- 0.70
 
 # Helpers: Yes/No to 1/0, safe division by minutes, ceiling at the 99th percentile, quartile bands
@@ -20,8 +20,8 @@ cap     <- function(x) pmin(x, quantile(x, 0.99, na.rm = TRUE))
 quarter <- function(x) cut(x, c(-Inf, quantile(x, c(0.25, 0.5, 0.75), na.rm = TRUE), Inf), c("Q1 low", "Q2", "Q3", "Q4 high"))
 
 # Open the data; blank cells count as missing
-if (!file.exists(file_path)) stop("Put cell2celltrain.csv from Canvas in data/")
-raw <- read_csv(file_path, na = c("", "NA", "NaN"), show_col_types = FALSE)
+if (!file.exists(c2c_data)) stop("Put cell2celltrain.csv from Canvas in data/")
+raw <- read_csv(c2c_data, na = c("", "NA", "NaN"), show_col_types = FALSE)
 
 # Stop early if a needed column is absent
 needed <- c(
