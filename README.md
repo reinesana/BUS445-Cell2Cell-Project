@@ -11,10 +11,28 @@ contribution.
 BUS445-Cell2Cell-Project/
 ├── data/
 │   └── cell2celltrain.csv     Canvas data file (not in git)
-├── scripts/
-│   └── 01_data_cleaning.R     Cleaning, derived variables, train/test split
+├── R/                         Analysis scripts, run in order
+├── figures/                   Charts for the memo and presentation
 └── BUS445-Cell2Cell-Project.Rproj
 ```
+
+## Scripts
+
+Each script starts with `source("R/01_data_cleaning.R")`. Add your name to the
+`Owner` line at the top of your file and keep `Status` up to date.
+
+| Script | Purpose | Owner |
+|---|---|---|
+| `01_data_cleaning.R` | Clean data, shared variables, train/test split | |
+| `02_eda.R` | Churn share vs real rate, churn by band, gaps within tenure, segment sizes | |
+| `03_lever_handset.R` | Handset lever: age, web-capable, refurbished | |
+| `04_lever_plan_fit.R` | Plan-fit lever: overage share, revenue gap | |
+| `05_lever_network.R` | Network lever: dropped and blocked calls per minute | |
+| `06_model.R` | Main logistic model, save-desk stability refit, random forest benchmark, ROC-AUC | |
+| `07_one_number.R` | 12-month net dollar impact per lever, break-even causal share, sensitivity | |
+| `08_pilot_design.R` | Pilot lever, unit randomized, size, duration, payback threshold | |
+
+For submission, scripts 01-08 are combined into a single R file.
 
 ## Getting started
 
@@ -27,7 +45,7 @@ BUS445-Cell2Cell-Project/
 Start every analysis script with:
 
 ```r
-source("scripts/01_data_cleaning.R")
+source("R/01_data_cleaning.R")
 train <- subset(clean, split == "train")
 test  <- subset(clean, split == "test")
 ```

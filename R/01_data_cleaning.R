@@ -2,6 +2,8 @@
 # Cell2Cell Customer Retention Analysis
 # 01_data_cleaning.R
 #
+# Owner   : [name]
+# Status  : Complete
 # Purpose : Clean the raw Cell2Cell customer file, build the shared analysis
 #           variables and create a fixed train/test split.
 # Input   : data/cell2celltrain.csv
@@ -12,7 +14,7 @@
 #           variable_summary    distribution of key variables
 #           churn_by_band       churn rate by band for each lever and control
 #
-# Usage   : source("scripts/01_data_cleaning.R") from the project root
+# Usage   : source("R/01_data_cleaning.R") from the project root
 #           (open BUS445-Cell2Cell-Project.Rproj in RStudio).
 # =============================================================================
 
